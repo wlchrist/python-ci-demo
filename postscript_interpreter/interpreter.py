@@ -221,10 +221,11 @@ class Interpreter:
             return
         if n > len(self.operand_stack):
             raise InterpreterError("roll: stack underflow")
-        # Get the top n elements
+        # Roll top n elements on the stack by j positions.
+        # Positive j rotates elements upward (top moves to bottom of the group).
+        # Example: [1, 2, 3] with n=3, j=1 becomes [3, 1, 2]
         items = self.operand_stack[-n:]
-        # Roll them: positive j moves top elements down
-        j = j % n
+        j = j % n  # Normalize j to avoid unnecessary full rotations
         rolled = items[-j:] + items[:-j]
         self.operand_stack[-n:] = rolled
 
@@ -637,9 +638,11 @@ class Interpreter:
 
     def _pop_int(self) -> int:
         obj = self._pop()
+        # Check for bool first since bool is a subclass of int in Python
         if isinstance(obj, int) and not isinstance(obj, bool):
             return obj
-        if isinstance(obj, float) and obj == int(obj):
+        # Allow floats that represent whole numbers (e.g., 5.0 -> 5)
+        if isinstance(obj, float) and obj.is_integer():
             return int(obj)
         raise InterpreterError(f"Expected integer, got {type(obj).__name__}")
 
