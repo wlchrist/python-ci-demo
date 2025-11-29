@@ -1,5 +1,6 @@
 """PostScript interpreter with stack-based execution."""
 
+import math
 from typing import Dict, List, Callable, Any, Optional
 from .lexer import Lexer, LexerError
 from .parser import Parser, Procedure, LiteralName, ExecutableName, ParserError
@@ -161,12 +162,10 @@ class Interpreter:
         self.operand_stack.append(abs(a))
 
     def _op_ceiling(self) -> None:
-        import math
         a = self._pop_number()
         self.operand_stack.append(float(math.ceil(a)))
 
     def _op_floor(self) -> None:
-        import math
         a = self._pop_number()
         self.operand_stack.append(float(math.floor(a)))
 
@@ -175,12 +174,10 @@ class Interpreter:
         self.operand_stack.append(float(round(a)))
 
     def _op_truncate(self) -> None:
-        import math
         a = self._pop_number()
         self.operand_stack.append(float(math.trunc(a)))
 
     def _op_sqrt(self) -> None:
-        import math
         a = self._pop_number()
         if a < 0:
             raise InterpreterError("sqrt: negative number")
